@@ -44,3 +44,30 @@ RegisterNetEvent("ND:setCharacter", function(character)
     characterStatus = characterData
     createUI()
 end)
+function stamina(ped, info)
+    local usingStamina = false
+    if info.onRun and IsPedRunning(ped) then
+        if characterStatus[info.type].status < 50.0 then
+            characterStatus[info.type].status += info.increaseRate / 3
+        elseif characterStatus[info.type].status > 55.0 then
+            characterStatus[info.type].status -= info.onRun
+            usingStamina = true
+        end
+    end
+    if info.onSprint and IsPedSprinting(ped) then
+        characterStatus[info.type].status -= info.onSprint
+        changeStatus("thirst", -0.05)
+        usingStamina = true
+    end
+    if info.onJump and IsPedJumping(ped) then
+        characterStatus[info.type].status -= info.onJump
+        usingStamina = true
+    end
+    if not usingStamina and characterStatus[info.type].status < characterStatus[info.type].max then
+        characterStatus[info.type].status += info.increaseRate
+    end
+    if characterStatus[info.type].status < 0.0 then
+        characterStatus[info.type].status = 0.0
+    end
+    SetPlayerStamina(player, characterStatus[info.type].status)
+end
