@@ -71,3 +71,25 @@ function stamina(ped, info)
     end
     SetPlayerStamina(player, characterStatus[info.type].status)
 end
+
+CreateThread(function()
+    while true do
+        Wait(500)
+        if characterStatus and shown then
+            local ped = PlayerPedId()
+            for _, info in pairs(config) do
+                if info.enabled then
+                    if info.decreaseRate and characterStatus[info.type].status >= 1.0 then
+                        characterStatus[info.type].status -= info.decreaseRate / 3
+                    elseif characterStatus[info.type].status < 0.0 then
+                        characterStatus[info.type].status = 0.0
+                    end
+
+                    if info.type == "stamina" then
+                        stamina(ped, info)
+                    end
+                end
+            end
+        end
+    end
+end)
