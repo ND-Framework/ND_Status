@@ -1,3 +1,48 @@
+local player = PlayerId()
+local shown = false
+local characterStatus = nil
+local NDCore = exports["ND_Core"]:GetCoreObject()
+
+function setStatus(statusName, value)
+    characterStatus[statusName].status = value
+end
+
+function changeStatus(statusName, value)
+    characterStatus[statusName].status += value
+    if characterStatus[statusName].status > characterStatus[statusName].max then characterStatus[statusName].status = characterStatus[statusName].max end
+end
+
+function setMaxStatus(statusName, max)
+    characterStatus[statusName].max = max
+    if statusName ~= "stamina" then return end
+    SetPlayerMaxStamina(player, max)
+end
+
+function getStatus()
+    return characterStatus
+end
+
+function createUI()
+    if enableUI then
+        SendNUIMessage({
+            type = "remove"
+        })
+    end
+    for _, info in pairs(config) do
+        Wait(1000)
+        if info.type == "stamina" then
+            setMaxStatus("stamina", characterStatus[info.type].max)
+        end
+        if info.enabled and enableUI then
+            SendNUIMessage({
+                type = "add",
+                info = info
+            })
+        end
+    end
+    shown = true
+end
+
 AddEventHandler("onResourceStart", function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then
         return
@@ -91,5 +136,25 @@ CreateThread(function()
                 end
             end
         end
+    end
+end)
+
+if enableUI then
+    CreateThread(function()
+        repeat Wait(100) until(shown)
+        while true do
+            Wait(1000)
+            SendNUIMessage({
+                type = "update",
+                info = json.encode(characterStatus)
+            })
+        end
+    end)
+end
+
+CreateThread(function()
+    while true do
+        Wait(4*60000)
+        TriggerServerEvent("ND_Status:update", characterStatus)
     end
 end)
