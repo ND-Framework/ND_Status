@@ -89,6 +89,7 @@ RegisterNetEvent("ND:setCharacter", function(character)
     characterStatus = characterData
     createUI()
 end)
+
 function stamina(ped, info)
     local usingStamina = false
     if info.onRun and IsPedRunning(ped) then
