@@ -32,7 +32,7 @@ function createUI()
         if info.type == "stamina" then
             setMaxStatus("stamina", characterStatus[info.type].max)
         end
-        if info.enabled and enableUI then
+        if info.enabled and enableUI and info.style then
             SendNUIMessage({
                 type = "add",
                 info = info
@@ -55,7 +55,7 @@ AddEventHandler("onResourceStart", function(resourceName)
         characterStatus = characterData
         return createUI()
     end
-    
+
     characterStatus = {}
     for _, info in pairs(config) do
         if info.enabled then
@@ -91,30 +91,31 @@ end)
 
 function stamina(ped, info)
     local usingStamina = false
+    local status = characterStatus[info.type]
     if info.onRun and IsPedRunning(ped) then
-        if characterStatus[info.type].status < 50.0 then
-            characterStatus[info.type].status += info.increaseRate / 3
-        elseif characterStatus[info.type].status > 55.0 then
-            characterStatus[info.type].status -= info.onRun
+        if status.status < 50.0 then
+            status.status += info.increaseRate / 3
+        elseif status.status > 55.0 then
+            status.status -= info.onRun
             usingStamina = true
         end
     end
     if info.onSprint and IsPedSprinting(ped) then
-        characterStatus[info.type].status -= info.onSprint
+        status.status -= info.onSprint
         changeStatus("thirst", -0.05)
         usingStamina = true
     end
     if info.onJump and IsPedJumping(ped) then
-        characterStatus[info.type].status -= info.onJump
+        status.status -= info.onJump
         usingStamina = true
     end
-    if not usingStamina and characterStatus[info.type].status < characterStatus[info.type].max then
-        characterStatus[info.type].status += info.increaseRate
+    if not usingStamina and status.status < status.max then
+        status.status += info.increaseRate
     end
-    if characterStatus[info.type].status < 0.0 then
-        characterStatus[info.type].status = 0.0
+    if status.status < 0.0 then
+        status.status = 0.0
     end
-    SetPlayerStamina(player, characterStatus[info.type].status)
+    SetPlayerStamina(player, status.status)
 end
 
 CreateThread(function()
