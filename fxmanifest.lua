@@ -9,13 +9,17 @@ game "gta5"
 lua54 "yes"
 
 files {
-    "source/index.html",
-    "source/style.css",
-    "source/script.js"
+    "ui/style.css",
+    "ui/script.js",
+    "ui/circle.js",
+    "ui/index.html"
 }
-ui_page "source/index.html"
+ui_page "ui/index.html"
 
-shared_script "config.lua"
+shared_scripts {
+    "config.lua",
+    "@ND_Core/init.lua"
+}
 server_scripts {
     "source/server.lua"
 }

@@ -1,7 +1,6 @@
 local player = PlayerId()
 local shown = false
 local characterStatus = nil
-local NDCore = exports["ND_Core"]:GetCoreObject()
 
 function setStatus(statusName, value)
     characterStatus[statusName].status = value
@@ -48,25 +47,25 @@ AddEventHandler("onResourceStart", function(resourceName)
         return
     end
 
-    local character = NDCore.Functions.GetSelectedCharacter()
-    if not character then return end
+    local player = NDCore.getPlayer()
+    if not player then return end
 
-    local characterData = character.data.status
-    if not characterData then
-        characterStatus = {}
-        for _, info in pairs(config) do
-            if info.enabled then
-                characterStatus[info.type] = {
-                    type = info.type,
-                    status = info.max,
-                    max = info.max
-                }
-            end
-        end
-        createUI()
-        return
+    local characterData = player.metadata.status
+    if characterData then
+        characterStatus = characterData
+        return createUI()
     end
-    characterStatus = characterData
+    
+    characterStatus = {}
+    for _, info in pairs(config) do
+        if info.enabled then
+            characterStatus[info.type] = {
+                type = info.type,
+                status = info.max,
+                max = info.max
+            }
+        end
+    end
     createUI()
 end)
 

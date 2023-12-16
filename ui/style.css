@@ -1,0 +1,14 @@
+.info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    position: absolute;
+    margin: auto;
+    right: 1%;
+    bottom: 2%;
+}
+
+status-circle {
+    margin: 0.2vw;
+}
