@@ -13,7 +13,8 @@ files {
     "ui/script.js",
     "ui/circle.js",
     "ui/index.html",
-    "source/actions.lua"
+    "data/**",
+    "source/actions.lua",
 }
 ui_page "ui/index.html"
 
