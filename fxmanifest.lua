@@ -1,6 +1,6 @@
 -- For support join my discord: https://discord.gg/Z9Mxu72zZ6
 
-author "Andyyy#7666"
+author "Andyyy7666"
 description "Status for ND"
 version "1.0.0"
 
@@ -17,14 +17,20 @@ files {
 ui_page "ui/index.html"
 
 shared_scripts {
-    "config.lua",
-    "@ND_Core/init.lua"
+    "@ND_Core/init.lua",
+    "@ox_lib/init.lua"
 }
 server_scripts {
     "source/server.lua"
 }
 client_scripts {
+    "config.lua",
     "source/client.lua"
+}
+
+dependencies {
+    "ND_Core",
+    "ox_lib"
 }
 
 exports {

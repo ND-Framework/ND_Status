@@ -1,104 +1,110 @@
-local player = PlayerId()
 local shown = false
 local characterStatus = nil
+local actions = {}
 
 function setStatus(statusName, value)
-    characterStatus[statusName].status = value
+    local charStatus = characterStatus[statusName]
+    if not charStatus or not value then return end
+
+    charStatus.status = value
 end
 
 function changeStatus(statusName, value)
-    characterStatus[statusName].status += value
-    if characterStatus[statusName].status > characterStatus[statusName].max then characterStatus[statusName].status = characterStatus[statusName].max end
+    local charStatus = characterStatus[statusName]
+    if not charStatus or not value then return end
+
+    charStatus.status += value
+
+    if charStatus.status > charStatus.max then
+        charStatus.status = charStatus.max
+    end
+    if charStatus.status < 0 then
+        charStatus.status = 0
+    end
 end
 
 function setMaxStatus(statusName, max)
-    characterStatus[statusName].max = max
+    local charStatus = characterStatus[statusName]
+    if not charStatus or not max then return end
+
+    charStatus.max = max
+
     if statusName ~= "stamina" then return end
-    SetPlayerMaxStamina(player, max)
+    SetPlayerMaxStamina(cache.playerId, max)
 end
 
-function getStatus()
+local function getStatus()
     return characterStatus
 end
 
-function createUI()
+local function createUI()
     if enableUI then
         SendNUIMessage({
             type = "remove"
         })
     end
-    for _, info in pairs(config) do
-        Wait(1000)
+
+    for i=1, #config do
+        local info = config[i]
+        if not info.enabled or not enableUI or not info.style then goto next end
+
+        Wait(500)
         if info.type == "stamina" then
-            setMaxStatus("stamina", characterStatus[info.type].max)
+            setMaxStatus("stamina", characterStatus[info.type]?.max)
         end
-        if info.enabled and enableUI and info.style then
-            SendNUIMessage({
-                type = "add",
-                info = info
-            })
-        end
+        SendNUIMessage({
+            type = "add",
+            info = info
+        })
+
+        ::next::
     end
+
     shown = true
 end
 
-AddEventHandler("onResourceStart", function(resourceName)
-    if (GetCurrentResourceName() ~= resourceName) then
-        return
-    end
+local function createStatus(index)
+    local newInfo = config[index]
+    if not newInfo or not newInfo.enabled then return end
+    return {
+        type = newInfo.type,
+        status = newInfo.default or newInfo.max,
+        max = newInfo.max,
+        reversed = newInfo.reversed
+    }
+end
 
-    local player = NDCore.getPlayer()
-    if not player then return end
+local function setupPlayerStatus(player)
+    local characterData = player?.metadata.status
+    characterStatus = {}
 
-    local characterData = player.metadata.status
-    if characterData then
-        characterStatus = characterData
+    if not characterData then
+        for i=1, #config do
+            local info = config[i]
+            characterStatus[newInfo.type] = createStatus(i)
+        end
         return createUI()
     end
 
-    characterStatus = {}
-    for _, info in pairs(config) do
-        if info.enabled then
-            characterStatus[info.type] = {
-                type = info.type,
-                status = info.max,
-                max = info.max
-            }
+    for i=1, #config do
+        local info = config[i]
+        if info.enabled and not characterData[info.type] then
+            characterData[info.type] = createStatus(i)
+        elseif not info.enabled and characterData[info.type] then
+            characterData[info.type] = nil
         end
     end
-    createUI()
-end)
 
-RegisterNetEvent("ND:setCharacter", function(character)
-    local characterData = character.data.status
-    if not characterData then
-        characterStatus = {}
-        for _, info in pairs(config) do
-            if info.enabled then
-                characterStatus[info.type] = {
-                    type = info.type,
-                    status = info.max,
-                    max = info.max
-                }
-            end
-        end
-        createUI()
-        return
-    end
     characterStatus = characterData
     createUI()
-end)
+end
 
-function stamina(ped, info)
+function actions.stamina(ped, info)
     local usingStamina = false
     local status = characterStatus[info.type]
-    if info.onRun and IsPedRunning(ped) then
-        if status.status < 50.0 then
-            status.status += info.increaseRate / 3
-        elseif status.status > 55.0 then
-            status.status -= info.onRun
-            usingStamina = true
-        end
+
+    if info.onRun and IsPedRunning(ped) and status.status < 50.0 then
+        status.status += info.increaseRate / 3
     end
     if info.onSprint and IsPedSprinting(ped) then
         status.status -= info.onSprint
@@ -112,50 +118,80 @@ function stamina(ped, info)
     if not usingStamina and status.status < status.max then
         status.status += info.increaseRate
     end
-    if status.status < 0.0 then
-        status.status = 0.0
+
+    if status.status > 50 then
+        RestorePlayerStamina(cache.playerId, 1.0)
     end
-    SetPlayerStamina(player, status.status)
 end
+
+function actions.alcohol(ped, info)
+    local status = characterStatus[info.type]
+
+end
+
+AddEventHandler("onResourceStart", function(resourceName)
+    if cache.resource ~= resourceName then return end
+    Wait(500)
+
+    local player = NDCore.getPlayer()
+    setupPlayerStatus(player)
+end)
+
+RegisterNetEvent("ND:characterLoaded", function(character)
+    Wait(500)
+    setupPlayerStatus(character)
+end)
 
 CreateThread(function()
     while true do
         Wait(500)
-        if characterStatus and shown then
-            local ped = PlayerPedId()
-            for _, info in pairs(config) do
-                if info.enabled then
-                    if info.decreaseRate and characterStatus[info.type].status >= 1.0 then
-                        characterStatus[info.type].status -= info.decreaseRate / 3
-                    elseif characterStatus[info.type].status < 0.0 then
-                        characterStatus[info.type].status = 0.0
-                    end
+        if not characterStatus or not shown then goto skip end
 
-                    if info.type == "stamina" then
-                        stamina(ped, info)
-                    end
-                end
+        local ped = cache.ped
+        for i=1, #config do
+            local info = config[i]
+            local infoType = info.type
+            local charStatus = characterStatus[infoType]
+            if not info.enabled or not charStatus then goto next end
+
+            if info.decreaseRate and charStatus.status >= 1 then
+                charStatus.status -= info.decreaseRate / 3
             end
+            if info.action and actions[info.action] then
+                actions[info.action](ped, info)
+            end
+            if charStatus.status < 0 then
+                charStatus.status = 0
+            end
+            if charStatus.status > (info.max or 100) then
+                charStatus.status = info.max or 100
+            end
+
+            ::next::
         end
+
+        ::skip::
     end
 end)
 
-if enableUI then
-    CreateThread(function()
-        repeat Wait(100) until(shown)
-        while true do
-            Wait(1000)
-            SendNUIMessage({
-                type = "update",
-                info = json.encode(characterStatus)
-            })
-        end
-    end)
-end
-
 CreateThread(function()
+    if enableUI then
+        repeat Wait(100) until(shown)
+    end
+
+    local lastUpdate = 0
     while true do
-        Wait(4*60000)
-        TriggerServerEvent("ND_Status:update", characterStatus)
+        Wait(500)
+
+        local time = GetCloudTimeAsInt()
+        if time-lastUpdate > 240 then
+            TriggerServerEvent("ND_Status:update", characterStatus)
+            lastUpdate = time
+        end
+
+        SendNUIMessage({
+            type = "update",
+            info = json.encode(characterStatus)
+        })
     end
 end)
