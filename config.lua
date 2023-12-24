@@ -36,4 +36,15 @@ config = {
             icon = "fa-solid fa-person-running",
         }
     },
+    {
+        type = "alcohol",
+        enabled = true,
+        max = 100.0,
+        decreaseRate = 0.3,
+        style = {
+            circleColor = "#a032a8",
+            iconColor = "#ffffff",
+            icon = "fa-solid fa-wine-glass",
+        }
+    }
 }
