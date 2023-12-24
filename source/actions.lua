@@ -40,7 +40,7 @@ function actions.alcohol(ped, info, status)
         ClearTimecycleModifier()
         SetPedMotionBlur(ped, false)
         SetPedIsDrunk(ped, false)
-        ShakeGameplayCam("DRUNK_SHAKE", 0)
+        -- ShakeGameplayCam("DRUNK_SHAKE", 0.0)
 
         alreadyRagdoll = false
         
@@ -53,13 +53,12 @@ function actions.alcohol(ped, info, status)
     lib.requestAnimSet(newMovement)
     SetPedMovementClipset(ped, newMovement, true)
 
-    local intStatus = math.floor(status.status)
-    ShakeGameplayCam("DRUNK_SHAKE", intStatus)
+    -- ShakeGameplayCam("DRUNK_SHAKE", status.status/50)
 
     if GetResourceState("Breathalyzer") == "started" then        
         local time = GetCloudTimeAsInt()
         if time-lsatBacUpdate > 10 then
-            TriggerServerEvent("ND_Status:setBAC", intStatus)
+            TriggerServerEvent("ND_Status:setBAC", math.floor(status.status))
             lsatBacUpdate = time
         end
     end
@@ -76,7 +75,6 @@ function actions.alcohol(ped, info, status)
         end
     end)
 end
-SetPedRagdollForceFall(cache.ped)
 
 function actions.stamina(ped, info, status)
     local usingStamina = false
