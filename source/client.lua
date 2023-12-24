@@ -1,6 +1,6 @@
 local shown = false
 local characterStatus = nil
-local actions = {}
+local actions = lib.load("source.actions")
 
 function setStatus(statusName, value)
     local charStatus = characterStatus[statusName]
@@ -99,36 +99,6 @@ local function setupPlayerStatus(player)
     createUI()
 end
 
-function actions.stamina(ped, info)
-    local usingStamina = false
-    local status = characterStatus[info.type]
-
-    if info.onRun and IsPedRunning(ped) and status.status < 50.0 then
-        status.status += info.increaseRate / 3
-    end
-    if info.onSprint and IsPedSprinting(ped) then
-        status.status -= info.onSprint
-        changeStatus("thirst", -0.05)
-        usingStamina = true
-    end
-    if info.onJump and IsPedJumping(ped) then
-        status.status -= info.onJump
-        usingStamina = true
-    end
-    if not usingStamina and status.status < status.max then
-        status.status += info.increaseRate
-    end
-
-    if status.status > 50 then
-        RestorePlayerStamina(cache.playerId, 1.0)
-    end
-end
-
-function actions.alcohol(ped, info)
-    local status = characterStatus[info.type]
-
-end
-
 AddEventHandler("onResourceStart", function(resourceName)
     if cache.resource ~= resourceName then return end
     Wait(500)
@@ -158,7 +128,7 @@ CreateThread(function()
                 charStatus.status -= info.decreaseRate / 3
             end
             if info.action and actions[info.action] then
-                actions[info.action](ped, info)
+                actions[info.action](ped, info, charStatus)
             end
             if charStatus.status < 0 then
                 charStatus.status = 0

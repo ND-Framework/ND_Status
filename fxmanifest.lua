@@ -12,7 +12,8 @@ files {
     "ui/style.css",
     "ui/script.js",
     "ui/circle.js",
-    "ui/index.html"
+    "ui/index.html",
+    "source/actions.lua"
 }
 ui_page "ui/index.html"
 
