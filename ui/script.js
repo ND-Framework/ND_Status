@@ -28,10 +28,10 @@ const actions = {
                 element.attr("value", newValue2);
     
                 const reversed = value.reversed
-                if ((!reversed && newValue2 > 90 || reversed && newValue2 < 10) && statusUI[value.type] == "shown") {
+                if ((!reversed && newValue2 > 99 || reversed && newValue2 < 1) && statusUI[value.type] == "shown") {
                     statusUI[value.type] = "hidden";
                     element.fadeOut();
-                } else if ((!reversed && newValue2 < 90 || reversed && newValue2 > 10) && statusUI[value.type] == "hidden") {
+                } else if ((!reversed && newValue2 < 99 || reversed && newValue2 > 1) && statusUI[value.type] == "hidden") {
                     statusUI[value.type] = "shown";
                     element.fadeIn();
                 };
