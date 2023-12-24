@@ -28,9 +28,6 @@ function setMaxStatus(statusName, max)
     if not charStatus or not max then return end
 
     charStatus.max = max
-
-    if statusName ~= "stamina" then return end
-    SetPlayerMaxStamina(cache.playerId, max)
 end
 
 local function getStatus()
