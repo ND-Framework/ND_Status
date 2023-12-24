@@ -70,7 +70,7 @@ function actions.alcohol(ped, info, status)
     CreateThread(function()
         while alreadyRagdoll do
             Wait(math.random(8000, 15000))
-            if math.random(1, 2) == 1 then
+            if math.random(1, 5) == 1 then
                 SetPedToRagdoll(ped, 1000, 1000, 0, true, true, false)
             end
         end
