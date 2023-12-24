@@ -19,7 +19,7 @@ config = {
         style = {
             circleColor = "#428af5",
             iconColor = "#ffffff",
-            icon = "fa-solid fa-bottle-water",
+            icon = "fa-solid fa-glass-water",
         }
     },
     {
