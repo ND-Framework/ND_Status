@@ -78,7 +78,7 @@ local function setupPlayerStatus(player)
     if not characterData then
         for i=1, #config do
             local info = config[i]
-            characterStatus[newInfo.type] = createStatus(i)
+            characterStatus[info.type] = createStatus(i)
         end
         return createUI()
     end
