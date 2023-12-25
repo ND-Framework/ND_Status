@@ -15,6 +15,6 @@ RegisterNetEvent("ND_Status:setBAC", function(status)
         status = 100
     end
         
-    local lvl = status*(math.random(6, 10)/1000)
+    local lvl = status*(math.random(6, 10)/2000)
     exports["Breathalyzer"]:setBAC(src, lvl)
 end)
