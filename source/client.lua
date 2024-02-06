@@ -30,7 +30,7 @@ function setMaxStatus(statusName, max)
     charStatus.max = max
 end
 
-local function getStatus()
+function getStatus()
     return characterStatus
 end
 
