@@ -100,6 +100,24 @@ function actions.stamina(ped, info, status)
     end
 end
 
+function actions.armor(ped, info, status)
+    local armor = GetPedArmour(ped)
+    local maxArmor = GetPlayerMaxArmour(cache.playerId)
+    if armor > maxArmor then
+        armor = maxArmor
+    elseif armor < 0 then
+        armor = 0
+    end
+    
+    local total = (armor/maxArmor)*100
+    local scalingFactor = (armor/maxArmor)+((100-total)/60)
+    if scalingFactor < 0 then
+        scalingFactor = -scalingFactor
+    end
+
+    status.status = (armor / (maxArmor*scalingFactor))*100
+end
+
 local lastFlashTime = 0
 local lastStarveNotifiaction = 0
 function actions.starve(ped, info, status)

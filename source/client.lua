@@ -72,7 +72,7 @@ local function createStatus(index)
 end
 
 local function setupPlayerStatus(player)
-    local characterData = player?.metadata.status
+    local characterData = player?.metadata?.status
     characterStatus = {}
 
     if not characterData then

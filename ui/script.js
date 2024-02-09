@@ -21,17 +21,16 @@ const actions = {
     
     update: function(item) {
         for (const [_, value] of Object.entries(JSON.parse(item.info))) {
-            if (statusUI[value.type]) {
-                let newValue = value.max/value.status;
-                let newValue2 = value.status/newValue;
+            if (statusUI[value.type] && typeof(value.status) == "number") {
+                let newValue = value.status;
                 const element = $(`#circle-${value.type}`);
-                element.attr("value", newValue2);
+                element.attr("value", newValue);
     
                 const reversed = value.reversed
-                if ((!reversed && newValue2 > 99 || reversed && newValue2 < 1) && statusUI[value.type] == "shown") {
+                if ((!reversed && newValue > 99 || reversed && newValue < 1) && statusUI[value.type] == "shown") {
                     statusUI[value.type] = "hidden";
                     element.fadeOut();
-                } else if ((!reversed && newValue2 < 99 || reversed && newValue2 > 1) && statusUI[value.type] == "hidden") {
+                } else if ((!reversed && newValue < 99 || reversed && newValue > 1) && statusUI[value.type] == "hidden") {
                     statusUI[value.type] = "shown";
                     element.fadeIn();
                 };

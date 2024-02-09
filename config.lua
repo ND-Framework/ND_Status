@@ -53,4 +53,17 @@ config = {
             icon = "fa-solid fa-person-running",
         }
     },
+    {
+        type = "armor",
+        enabled = true,
+        max = 100.0,
+        reversed = true,
+        default = 0,
+        action = "armor",
+        style = {
+            circleColor = "#1ab2ff",
+            iconColor = "#ffffff",
+            icon = "fa-solid fa-shield-halved",
+        }
+    },
 }
