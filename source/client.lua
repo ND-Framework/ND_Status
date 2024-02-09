@@ -122,7 +122,7 @@ CreateThread(function()
             if not info.enabled or not charStatus then goto next end
 
             if info.decreaseRate and charStatus.status >= 1 then
-                charStatus.status -= info.decreaseRate / 3
+                charStatus.status -= info.decreaseRate/45
             end
             if info.action and actions[info.action] then
                 actions[info.action](ped, info, charStatus)

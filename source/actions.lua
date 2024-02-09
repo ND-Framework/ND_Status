@@ -80,7 +80,7 @@ function actions.stamina(ped, info, status)
     local usingStamina = false
 
     if info.onRun and IsPedRunning(ped) and status.status < 50.0 then
-        status.status += info.increaseRate / 3
+        status.status += info.onRun/5
     end
     if info.onSprint and IsPedSprinting(ped) then
         status.status -= info.onSprint
@@ -92,7 +92,7 @@ function actions.stamina(ped, info, status)
         usingStamina = true
     end
     if not usingStamina and status.status < status.max then
-        status.status += info.increaseRate
+        status.status += info.increaseRate*2
     end
 
     if status.status > 50 then
