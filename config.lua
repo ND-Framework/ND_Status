@@ -16,6 +16,7 @@ config = {
         enabled = true,
         max = 100.0,
         decreaseRate = 0.1,
+        action = "starve",
         style = {
             circleColor = "#428af5",
             iconColor = "#ffffff",

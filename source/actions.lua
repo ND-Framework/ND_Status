@@ -100,4 +100,30 @@ function actions.stamina(ped, info, status)
     end
 end
 
+local lastFlashTime = 0
+local lastStarveNotifiaction = 0
+function actions.starve(ped, info, status)
+    if status.status > 1 or IsPedFatallyInjured(ped) then return end
+    
+    local time = GetCloudTimeAsInt()
+    if time-lastFlashTime < 10 then return end
+
+    if time-lastStarveNotifiaction > 40 then
+        lib.notify({
+            title = ("You're %s"):format(info.type == "hunger" and "starving" or "dehydrated"),
+            type = "inform",
+            duration = 10000
+        })
+        lastStarveNotifiaction = time
+    end
+    
+    lastFlashTime = time
+    DoScreenFadeOut(500)
+    SetTimeout(500, function()
+        DoScreenFadeIn(500)
+        Wait(400)
+        ApplyDamageToPed(ped, 3)
+    end)
+end
+
 return actions
