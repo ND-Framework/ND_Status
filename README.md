@@ -1,1 +1,2 @@
-Planning to add what happens when a status is low, such as dissiness when hungry or thirsty. Drunk and drug screen effect & walking style when any of those are high.
+# ND_Status
+This resource enables hunger, thirst, stamina and more. You can add more status or remove in config file.

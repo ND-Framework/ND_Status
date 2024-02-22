@@ -54,6 +54,17 @@ config = {
         }
     },
     {
+        type = "health",
+        enabled = true,
+        max = 100.0,
+        action = "health",
+        style = {
+            circleColor = "#e44949",
+            iconColor = "#ffffff",
+            icon = "fa-solid fa-heart",
+        }
+    },
+    {
         type = "armor",
         enabled = true,
         max = 100.0,

@@ -118,6 +118,24 @@ function actions.armor(ped, info, status)
     status.status = (armor / (maxArmor*scalingFactor))*100
 end
 
+function actions.health(ped, info, status)
+    local health = GetEntityHealth(ped)
+    local maxHealth = GetEntityMaxHealth(ped)
+    if health > maxHealth then
+        health = maxHealth
+    elseif health < 0 then
+        health = 0
+    end
+    
+    local total = (health/maxHealth)*100
+    local scalingFactor = (health/maxHealth)+((100-total)/60)
+    if scalingFactor < 0 then
+        scalingFactor = -scalingFactor
+    end
+
+    status.status = (health / (maxHealth*scalingFactor))*100
+end
+
 local lastFlashTime = 0
 local lastStarveNotifiaction = 0
 function actions.starve(ped, info, status)
