@@ -7,11 +7,27 @@ function setStatus(statusName, value)
     if not charStatus or not value then return end
 
     charStatus.status = value
+
+    if statusName == "health" then        
+        local health = GetEntityHealth(cache.ped)
+        SetEntityHealth(cache.ped, value*2)
+    elseif statusName == "armor" then
+        local armor = GetPedArmour(cache.ped)
+        SetPedArmour(cache.ped, math.floor(value+0.5))
+    end
 end
 
 function changeStatus(statusName, value)
     local charStatus = characterStatus[statusName]
     if not charStatus or not value then return end
+
+    if statusName == "health" then
+        local health = GetEntityHealth(cache.ped)
+        SetEntityHealth(cache.ped, health+(value*2))
+    elseif statusName == "armor" then
+        local armor = GetPedArmour(cache.ped)
+        SetPedArmour(cache.ped, math.floor((armor+value)+0.5))
+    end
 
     charStatus.status += value
 
@@ -67,7 +83,8 @@ local function createStatus(index)
         type = newInfo.type,
         status = newInfo.default or newInfo.max,
         max = newInfo.max,
-        reversed = newInfo.reversed
+        reversed = newInfo.reversed,
+        showAlways = newInfo.showAlways
     }
 end
 
@@ -94,6 +111,13 @@ local function setupPlayerStatus(player)
 
     characterStatus = characterData
     createUI()
+
+    if characterStatus.health then
+        setStatus("health", characterStatus.health.status)
+    end
+    if characterStatus.armor then
+        setStatus("armor", characterStatus.armor.status)
+    end
 end
 
 AddEventHandler("onResourceStart", function(resourceName)
