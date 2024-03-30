@@ -36,7 +36,7 @@ dependencies {
 }
 
 exports {
-    "setStats",
+    "setStatus",
     "changeStatus",
     "setMaxStatus",
     "getStatus"
