@@ -187,3 +187,10 @@ CreateThread(function()
         })
     end
 end)
+
+RegisterNetEvent("ND_Status:fillstatus", function()
+    if source == "" then return end
+    setStatus("health", 100)
+    setStatus("thirst", 100)
+    setStatus("hunger", 100)
+end)

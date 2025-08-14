@@ -18,3 +18,17 @@ RegisterNetEvent("ND_Status:setBAC", function(status)
     local lvl = status*(math.random(6, 10)/2000)
     exports["Breathalyzer"]:setBAC(src, lvl)
 end)
+
+lib.addCommand("fillstatus", {
+    help = "Refresh status",
+    params = {
+        {
+            name = "target",
+            type = "playerId",
+            help = "Target player's server id",
+        }
+    },
+    restricted = "group.admin"
+}, function(source, args, raw)
+    TriggerClientEvent("ND_Status:fillstatus", args.target)
+end)
