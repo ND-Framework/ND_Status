@@ -1,10 +1,35 @@
 enableUI = true
 config = {
     {
+        type = "health",
+        enabled = true,
+        showAlways = true,
+        max = 100.0,
+        action = "health",
+        style = {
+            circleColor = "#e44949",
+            iconColor = "#ffffff",
+            icon = "fa-solid fa-heart",
+        }
+    },
+    {
+        type = "armor",
+        enabled = true,
+        max = 100.0,
+        reversed = true,
+        default = 0,
+        action = "armor",
+        style = {
+            circleColor = "#1ab2ff",
+            iconColor = "#ffffff",
+            icon = "fa-solid fa-shield-halved",
+        }
+    },
+    {
         type = "hunger",
         enabled = true,
         max = 100.0,
-        decreaseRate = 1.2,
+        decreaseRate = 0.2,
         action = "starve",
         style = {
             circleColor = "#ff8a14",
@@ -16,7 +41,7 @@ config = {
         type = "thirst",
         enabled = true,
         max = 100.0,
-        decreaseRate = 1.0,
+        decreaseRate = 0.15,
         action = "starve",
         style = {
             circleColor = "#428af5",
@@ -51,30 +76,6 @@ config = {
             circleColor = "#2eb03b",
             iconColor = "#ffffff",
             icon = "fa-solid fa-person-running",
-        }
-    },
-    {
-        type = "health",
-        enabled = true,
-        max = 100.0,
-        action = "health",
-        style = {
-            circleColor = "#e44949",
-            iconColor = "#ffffff",
-            icon = "fa-solid fa-heart",
-        }
-    },
-    {
-        type = "armor",
-        enabled = true,
-        max = 100.0,
-        reversed = true,
-        default = 0,
-        action = "armor",
-        style = {
-            circleColor = "#1ab2ff",
-            iconColor = "#ffffff",
-            icon = "fa-solid fa-shield-halved",
         }
     },
 }
