@@ -1,3 +1,4 @@
+lib.locale()
 local shown = false
 local characterStatus = nil
 local actions = lib.load("source.actions")

@@ -146,7 +146,7 @@ function actions.starve(ped, info, status)
 
     if time-lastStarveNotifiaction > 40 then
         lib.notify({
-            title = ("You're %s"):format(info.type == "hunger" and "starving" or "dehydrated"),
+            title = info.type == "hunger" and locale("starving") or locale("dehydrated"),
             type = "inform",
             duration = 10000
         })

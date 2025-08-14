@@ -15,6 +15,7 @@ files {
     "ui/index.html",
     "data/**",
     "source/actions.lua",
+    "locales/*json"
 }
 ui_page "ui/index.html"
 
