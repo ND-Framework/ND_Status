@@ -83,7 +83,7 @@ class circle extends HTMLElement {
         const circleElement = shadow.querySelector(".circle");
 
         if (circleElement) {
-            circleElement.style.setProperty("--circleColor", this.circleColor);
+            circleElement.style.setProperty("--circleColor", this.circleColor || "white");
             circleElement.style.setProperty("--value", `${this.value}%`);
         }
 
